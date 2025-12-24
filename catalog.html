@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>產品目錄練習</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .catalog {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .product-card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 16px;
+      width: 260px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 150px;
+      background: #dddddd;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .product-code {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 8px;
+    }
+
+    .product-desc {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .price {
+      font-weight: 700;
+    }
+
+    .tag {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eee;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>產品目錄（範例）</h1>
+
+  <section class="catalog">
+    <article class="product-card">
+      <div class="product-image">圖片位置</div>
+      <div class="product-name">水性環保塗料 A001</div>
+      <div class="product-code">產品編號：A001-20KG</div>
+      <div class="product-desc">
+        適用於室內牆面，低氣味、快乾，VOC 含量符合環保標準。
+      </div>
+      <div class="product-footer">
+        <span class="price">$1,200</span>
+        <span class="tag">室內用</span>
+      </div>
+    </article>
+
+    <article class="product-card">
+      <div class="product-image">圖片位置</div>
+      <div class="product-name">工業用水性底漆 B010</div>
+      <div class="product-code">產品編號：B010-18KG</div>
+      <div class="product-desc">
+        適用金屬底材的防鏽底漆，附著力佳，搭配面漆使用。
+      </div>
+      <div class="product-footer">
+        <span class="price">$2,350</span>
+        <span class="tag">工業用</span>
+      </div>
+    </article>
+
+    <article class="product-card">
+      <div class="product-image">圖片位置</div>
+      <div class="product-name">戶外耐候面漆 C005</div>
+      <div class="product-code">產品編號：C005-16KG</div>
+      <div class="product-desc">
+        戶外木器與金屬皆可使用，具抗 UV 與耐候性。
+      </div>
+      <div class="product-footer">
+        <span class="price">$1,980</span>
+        <span class="tag">戶外用</span>
+      </div>
+    </article>
+  </section>
+</body>
+</html>
