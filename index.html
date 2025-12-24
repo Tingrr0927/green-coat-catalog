@@ -319,23 +319,36 @@
 
     /* ===== Navigation (inside book) ===== */
     .nav{
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:16px;
-      padding:0 32px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      pointer-events:none;
-      gap:12px;
-    }
+  position: sticky;      /* ✅ 關鍵：不要 absolute */
+  bottom: 14px;
+  left: auto;
+  right: auto;
 
-    .nav-info{
-      font-size:11px;
-      color:var(--muted);
-      max-width:60%;
-    }
+  margin-top: 14px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+
+  z-index: 50;
+
+  /* ✅ 讓底部有一層底，不會看起來文字穿透 */
+  background: rgba(253, 252, 247, 0.92);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 999px;
+
+  /* 你原本 pointer-events: none; 會讓整個 nav 不能點，
+     你是靠 nav-btn 開回來，手機上容易怪，建議拿掉 */
+  pointer-events: auto;
+}
+
+.nav-info{
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.2;
+}
 
     .nav-btn{
       pointer-events:auto;
@@ -434,6 +447,18 @@
         align-items:flex-start;
         gap:6px;
       }
+        .nav{
+      padding: 10px 12px;
+    }
+
+    .nav-info{
+      display: none; /* ✅ 手機先隱藏提示文字，避免擠到按鈕 */
+    }
+
+    .nav-btn{
+      width: 48%;
+      min-width: 0;
+    }
     }
     /* ===== Page2 Catalog (click categories) ===== */
 .catalog2-layout{
