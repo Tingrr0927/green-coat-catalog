@@ -615,7 +615,32 @@
   color: var(--green-dark);
   margin-right: 6px;
 }
+/* ✅ 修正：手機/平板 catalog2 一定要變單欄，避免右側被擠成細條 */
+@media (max-width: 900px){
+  .catalog2-layout{
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px;
+    height: auto !important;
+  }
 
+  .catalog2-left,
+  .catalog2-right{
+    width: 100% !important;
+    min-width: 0 !important;   /* ✅ 關鍵：避免 grid / flex 子層被擠爆 */
+  }
+
+  .catalog2-right{
+    overflow: auto;
+    max-height: none !important;
+  }
+}
+
+/* ✅ 手機再更緊一點 */
+@media (max-width: 480px){
+  .catalog2-left{ padding: 10px; }
+  .catalog2-right{ padding: 10px; }
+}
 
   </style>
 </head>
