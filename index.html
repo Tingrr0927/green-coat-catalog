@@ -415,37 +415,50 @@
       box-shadow:0 4px 10px rgba(0,0,0,0.12);
     }
 
-    /* ===== RWD ===== */
-    @media (max-width:900px){
+        /* ===== RWD ===== */
+
+    /* 平板以下（含手機橫向） */
+    @media (max-width: 900px){
       .book-wrapper{ padding:12px; }
       .font-controls{ left:12px; }
 
       .book{ padding:20px 16px 56px; }
-      .page{ padding-bottom: 120px; }
+      .page{ padding-bottom:120px; } /* ✅ 留底給 nav */
 
       .vm-grid{ grid-template-columns:1fr; }
 
       .catalog-layout{ grid-template-columns:1fr; }
       .product-grid{ grid-template-columns:1fr; }
 
+      /* ✅ catalog2：合併你原本第二段 900px */
+      .catalog2-layout{
+        grid-template-columns:1fr;
+        height:auto;
+      }
+      .catalog2-right{
+        max-height:46vh;
+      }
+
+      /* ✅ nav：手機/平板改 sticky，且拿掉 blur（iOS 點擊變慢元兇） */
       .nav{
-        position: sticky;
-        bottom: 12px;
+        position:sticky;
+        bottom:12px;
 
-        margin-top: 16px;
-        padding: 10px 14px;
+        margin-top:16px;
+        padding:10px 14px;
 
-        background:rgba(253, 252, 247, 0.95);
-        backdrop-filter: blur(6px);
-        border: 1px solid #e5e7eb;
-        border-radius: 999px;
-        z-index: 50;
-  }
+        background:rgba(253,252,247,0.96);
+        border:1px solid rgba(229,231,235,0.95);
+        border-radius:16px; /* ✅ 手機/平板用 16px 更穩 */
+
+        z-index:999;
+      }
 
       .nav-info{ max-width:100%; }
     }
 
-    @media (max-width:480px){
+    /* 手機直向 */
+    @media (max-width: 480px){
       .book-wrapper{ padding:8px; }
       .book-shadow{ padding:0; background:none; }
       .book{ border-radius:0; }
@@ -455,18 +468,21 @@
         align-items:flex-start;
         gap:6px;
       }
-        .nav{
-      padding: 10px 12px;
-    }
 
-    .nav-info{
-      display: none; /* ✅ 手機先隱藏提示文字，避免擠到按鈕 */
-    }
+      /* ✅ 手機 nav 只調尺寸，不碰 position/sticky */
+      .nav{
+        padding:10px 10px;
+        gap:10px;
+      }
 
-    .nav-btn{
-      width: 48%;
-      min-width: 0;
-    }
+      .nav-info{ display:none; }
+
+      .nav-btn{
+        width:48%;
+        min-width:0;
+        min-height:50px; /* ✅ 更好按 */
+        font-size:16px;
+      }
     }
     /* ===== Page2 Catalog (click categories) ===== */
 .catalog2-layout{
@@ -600,25 +616,7 @@
   margin-right: 6px;
 }
 
-/* RWD */
-@media (max-width: 900px){
-  .catalog2-layout{
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-  .catalog2-right{
-    max-height: 46vh; /* 小螢幕避免太長 */
-  }
-}
-@media (max-width: 480px){
-  .nav-info{
-    display: none;
-  }
 
-  .nav-btn{
-    width: 48%;
-  }
-}
   </style>
 </head>
 
