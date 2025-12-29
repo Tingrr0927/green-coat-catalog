@@ -643,64 +643,51 @@
 }
 
 /* =========================================================
-   ✅ PATCH：請放在整份 CSS 的最最最下面（統一覆蓋）
+   ✅ PATCH v2：iOS 手機點擊修復（請放在 CSS 最後）
    ========================================================= */
 
-/* ✅ 讓頁面內容不要被底部 nav 壓住 */
-.page{
-  padding-bottom: 140px;
-}
-
-/* ✅ 平板以下：catalog2 強制單欄，避免右側被擠成細條 */
+/* ✅ 900 以下：維持 sticky，但拿掉 blur，並確保層級夠高 */
 @media (max-width: 900px){
-  .catalog2-layout{
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px;
-    height: auto !important;
-  }
+  .nav{
+    position: sticky;
+    bottom: 12px;
+    z-index: 9999;
+    pointer-events: auto;
 
-  .catalog2-left,
-  .catalog2-right{
-    width: 100% !important;
-    min-width: 0 !important;  /* ✅ 關鍵：避免子層被擠爆 */
-  }
-
-  .catalog2-right{
-    overflow: auto;
-    max-height: none !important;
+    /* iOS：blur 會讓觸控命中變怪，先不要 */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }
 
-/* ✅ 手機：修正 nav 點擊區 + catalog2 padding */
+/* ✅ 480 以下：真正的 iOS hit-test 修復：關掉 page 的 3D transform */
 @media (max-width: 480px){
 
-  /* --- iOS：修正 nav / 按鈕點擊命中問題 --- */
+  /* iOS 很常是 transform/perspective 造成按鈕可點區域錯位 */
+  .page{
+    transform: none !important;
+    animation: none !important;
+  }
+  .page.active{
+    transform: none !important;
+  }
+
+  /* 保持 nav 在底部好按 */
   .nav{
-    position: absolute !important;
-    left: 12px;
-    right: 12px;
-    bottom: 16px;
-    z-index: 9999 !important;
-    pointer-events: auto !important;
-    overflow: visible;
+    position: sticky;
+    bottom: 12px;
+    z-index: 9999;
   }
 
   .nav-btn{
-    position: relative;
-    z-index: 10000;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
+    min-height: 52px;
+    width: 48%;
     touch-action: manipulation;
   }
 
   .nav-info{
     display: none;
   }
-
-  /* --- catalog2 更緊 --- */
-  .catalog2-left{ padding: 10px; }
-  .catalog2-right{ padding: 10px; }
 }
 
   </style>
@@ -808,7 +795,7 @@
   </div>
 
   <div class="form-link-area">
-    <p>如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
+    <p>{1}如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
     <a href="https://forms.gle/Nf5jKBXVDjChkryTA" target="_blank" rel="noopener" class="form-link-btn">填寫線上表單</a>
   </div>
 
