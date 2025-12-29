@@ -85,19 +85,26 @@
        ✅ Page base：把翻書 transform 改到 .page-content（修 iOS 按鈕難按）
        ========================================================= */
     .page{
-      position:absolute;
-      inset:0;
-      padding:24px 28px 56px;
-      pointer-events:none;
-      overflow-y:auto;
-      scrollbar-width:thin;
-      /* ✅ 讓 nav 可以 absolute 定位在 page 內 */
-      position:absolute;
-    }
+  position:absolute;
+  inset:0;
+  padding:24px 28px 56px;
 
-    .page.active{
-      pointer-events:auto;
-    }
+  overflow-y:auto;
+  scrollbar-width:thin;
+
+  /* ✅ 關鍵：非 active 頁面要真的隱藏，避免兩個 nav 疊在一起 */
+  opacity:0;
+  visibility:hidden;
+
+  pointer-events:none;
+  transition: opacity .25s ease;
+}
+
+.page.active{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
 
     /* ✅ 內容層：負責翻書效果（transform 只在這層） */
     .page-content{
@@ -588,7 +595,7 @@
   </div>
 
   <div class="form-link-area">
-    <p>如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
+    <p>{1}如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
     <a href="https://forms.gle/Nf5jKBXVDjChkryTA" target="_blank" rel="noopener" class="form-link-btn">填寫線上表單</a>
   </div>
 
