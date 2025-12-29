@@ -642,6 +642,67 @@
   .catalog2-right{ padding: 10px; }
 }
 
+/* =========================================================
+   ✅ PATCH：請放在整份 CSS 的最最最下面（統一覆蓋）
+   ========================================================= */
+
+/* ✅ 讓頁面內容不要被底部 nav 壓住 */
+.page{
+  padding-bottom: 140px;
+}
+
+/* ✅ 平板以下：catalog2 強制單欄，避免右側被擠成細條 */
+@media (max-width: 900px){
+  .catalog2-layout{
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px;
+    height: auto !important;
+  }
+
+  .catalog2-left,
+  .catalog2-right{
+    width: 100% !important;
+    min-width: 0 !important;  /* ✅ 關鍵：避免子層被擠爆 */
+  }
+
+  .catalog2-right{
+    overflow: auto;
+    max-height: none !important;
+  }
+}
+
+/* ✅ 手機：修正 nav 點擊區 + catalog2 padding */
+@media (max-width: 480px){
+
+  /* --- iOS：修正 nav / 按鈕點擊命中問題 --- */
+  .nav{
+    position: absolute !important;
+    left: 12px;
+    right: 12px;
+    bottom: 16px;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+    overflow: visible;
+  }
+
+  .nav-btn{
+    position: relative;
+    z-index: 10000;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    touch-action: manipulation;
+  }
+
+  .nav-info{
+    display: none;
+  }
+
+  /* --- catalog2 更緊 --- */
+  .catalog2-left{ padding: 10px; }
+  .catalog2-right{ padding: 10px; }
+}
+
   </style>
 </head>
 
