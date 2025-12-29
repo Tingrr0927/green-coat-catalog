@@ -663,14 +663,7 @@
 /* ✅ 480 以下：真正的 iOS hit-test 修復：關掉 page 的 3D transform */
 @media (max-width: 480px){
 
-  /* iOS 很常是 transform/perspective 造成按鈕可點區域錯位 */
-  .page{
-    transform: none !important;
-    animation: none !important;
-  }
-  .page.active{
-    transform: none !important;
-  }
+
 
   /* 保持 nav 在底部好按 */
   .nav{
@@ -795,7 +788,7 @@
   </div>
 
   <div class="form-link-area">
-    <p>{1}如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
+    <p>{2}如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
     <a href="https://forms.gle/Nf5jKBXVDjChkryTA" target="_blank" rel="noopener" class="form-link-btn">填寫線上表單</a>
   </div>
 
