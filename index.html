@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>環保水性塗料 - 產品目錄</title>
+  <title>綠博士環保水性塗料 - 產品目錄</title>
   <link rel="icon" type="image/png" href="favicon.png" />
 
   <style>
@@ -319,13 +319,13 @@
 
     /* ===== Navigation (inside book) ===== */
     .nav{
-  position: sticky;      /* ✅ 關鍵：不要 absolute */
-  bottom: 14px;
-  left: auto;
-  right: auto;
+  position: absolute;      /* ✅ 關鍵：不要 absolute */
+  bottom: 20px;
+  left: 0;
+  right: 0;
 
   margin-top: 14px;
-  padding: 10px 14px;
+  padding: 0px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -421,7 +421,7 @@
       .font-controls{ left:12px; }
 
       .book{ padding:20px 16px 56px; }
-      .page{ padding:20px 16px 56px; }
+      .page{ padding-bottom: 120px; }
 
       .vm-grid{ grid-template-columns:1fr; }
 
@@ -429,10 +429,18 @@
       .product-grid{ grid-template-columns:1fr; }
 
       .nav{
-        padding:0 16px;
-        flex-direction:column;
-        align-items:flex-start;
-      }
+        position: sticky;
+        bottom: 12px;
+
+        margin-top: 16px;
+        padding: 10px 14px;
+
+        background:rgba(253, 252, 247, 0.95);
+        backdrop-filter: blur(6px);
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        z-index: 50;
+  }
 
       .nav-info{ max-width:100%; }
     }
@@ -600,6 +608,15 @@
   }
   .catalog2-right{
     max-height: 46vh; /* 小螢幕避免太長 */
+  }
+}
+@media (max-width: 480px){
+  .nav-info{
+    display: none;
+  }
+
+  .nav-btn{
+    width: 48%;
   }
 }
   </style>
