@@ -35,7 +35,7 @@
       max-width:1280px;
       margin:0 auto;
       padding:24px;
-      position:relative; /* 讓浮動控制項好定位 */
+      position:relative;
     }
 
     .book-shadow{
@@ -47,7 +47,7 @@
     }
 
     .book{
-      position:relative;             /* ✅ 必要：讓 page absolute 有定位父層 */
+      position:relative;
       width:100%;
       height:100%;
       background:linear-gradient(135deg,var(--paper-bg),#fff);
@@ -58,14 +58,14 @@
       perspective:1600px;
     }
 
-    /* ===== 字體調整按鈕（放在 wrapper 左上） ===== */
+    /* ===== 字體調整按鈕 ===== */
     .font-controls{
       position:absolute;
       top:8px;
       left:24px;
       display:flex;
       gap:8px;
-      z-index:20;
+      z-index:2000;
     }
 
     .font-controls button{
@@ -79,36 +79,48 @@
       box-shadow:0 2px 8px rgba(0,0,0,0.08);
     }
 
-    .font-controls button:hover{
-      background:#f0fff4;
-    }
+    .font-controls button:hover{ background:#f0fff4; }
 
-    /* ===== Page base ===== */
+    /* =========================================================
+       ✅ Page base：把翻書 transform 改到 .page-content（修 iOS 按鈕難按）
+       ========================================================= */
     .page{
       position:absolute;
       inset:0;
       padding:24px 28px 56px;
+      pointer-events:none;
+      overflow-y:auto;
+      scrollbar-width:thin;
+      /* ✅ 讓 nav 可以 absolute 定位在 page 內 */
+      position:absolute;
+    }
+
+    .page.active{
+      pointer-events:auto;
+    }
+
+    /* ✅ 內容層：負責翻書效果（transform 只在這層） */
+    .page-content{
       opacity:0;
       transform:rotateY(8deg) scale(0.98);
       transform-origin:left center;
       transition:opacity .45s ease, transform .45s ease;
-      pointer-events:none;
-      overflow-y:auto;
-      scrollbar-width:thin;
+      min-height:100%;
+      /* ✅ 給 nav 留空間，避免內容被蓋住 */
+      padding-bottom:140px;
     }
 
-    .page.active{
+    .page.active .page-content{
       opacity:1;
       transform:rotateY(0deg) scale(1);
-      pointer-events:auto;
     }
 
-    .page.flip-in-from-right{
+    .page.flip-in-from-right .page-content{
       transform-origin:right center;
       animation:flipFromRight .55s ease;
     }
 
-    .page.flip-in-from-left{
+    .page.flip-in-from-left .page-content{
       transform-origin:left center;
       animation:flipFromLeft .55s ease;
     }
@@ -145,13 +157,6 @@
       display:block;
     }
 
-    .logo-mark{
-      width:24px;
-      height:24px;
-      border-radius:8px;
-      background:radial-gradient(circle at 30% 20%,#c6f6d5,var(--green-main));
-    }
-
     .logo-text{
       font-weight:800;
       letter-spacing:.02em;
@@ -165,7 +170,7 @@
       white-space:nowrap;
     }
 
-    /* ===== Page typography ===== */
+    /* ===== Typography ===== */
     .page-title{
       font-size:calc(22px * var(--font-scale));
       margin:14px 0 6px;
@@ -178,7 +183,6 @@
       margin-bottom:14px;
     }
 
-    /* ===== Intro blocks ===== */
     .hero-desc{
       margin:0 0 18px;
       font-size:calc(16px * var(--font-scale));
@@ -227,138 +231,42 @@
       color:#111827;
     }
 
-    /* ===== Catalog layout ===== */
-    .catalog-layout{
-      display:grid;
-      grid-template-columns:1.1fr 1.2fr;
-      gap:20px;
-      margin-top:6px;
-    }
-
-    .catalog-sidebar-title{
-      font-size:15px;
-      font-weight:700;
-      margin-bottom:8px;
-      color:#111827;
-    }
-
-    .category-list{
-      list-style:none;
-      padding:0;
-      margin:0;
-      font-size:13px;
-    }
-
-    .category-list li{
-      margin-bottom:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:#f7fafc;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      border:1px solid #e2e8f0;
-    }
-
-    .category-dot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background:var(--green-main);
-    }
-
-    .product-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-      font-size:12px;
-    }
-
-    .product{
-      font-size:calc(12px * var(--font-scale));
-      border-radius:10px;
-      padding:10px 12px;
-      background:#fff;
-      border:1px solid #e2e8f0;
-    }
-
-    .product-type{
-      font-size:11px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      color:var(--muted);
-      margin-bottom:2px;
-    }
-
-    .product-name{
-      font-weight:700;
-      font-size:13px;
-      margin-bottom:2px;
-    }
-
-    .product-meta{
-      font-size:11px;
-      color:var(--muted);
-      margin-bottom:6px;
-    }
-
-    .product-tags{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-    }
-
-    .product-tag{
-      font-size:10px;
-      padding:2px 8px;
-      border-radius:999px;
-      background:#f0fff4;
-      border:1px solid #c6f6d5;
-      color:var(--green-dark);
-    }
-
-    /* ===== Navigation (inside book) ===== */
+    /* ===== Navigation（固定在 page 底部，且不吃 transform） ===== */
     .nav{
-  position: absolute;      /* ✅ 關鍵：不要 absolute */
-  bottom: 20px;
-  left: 0;
-  right: 0;
+      position:absolute;
+      left:16px;
+      right:16px;
+      bottom:14px;
 
-  margin-top: 14px;
-  padding: 0px 14px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
 
-  z-index: 50;
+      z-index:9999;
 
-  /* ✅ 讓底部有一層底，不會看起來文字穿透 */
-  background: rgba(253, 252, 247, 0.92);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  border-radius: 999px;
+      background:rgba(253, 252, 247, 0.96);
+      border:1px solid rgba(226, 232, 240, 0.95);
+      border-radius:999px;
 
-  /* 你原本 pointer-events: none; 會讓整個 nav 不能點，
-     你是靠 nav-btn 開回來，手機上容易怪，建議拿掉 */
-  pointer-events: auto;
-}
+      padding:12px 14px;
+      pointer-events:auto;
+    }
 
-.nav-info{
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.2;
-}
+    .nav-info{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.2;
+    }
 
     .nav-btn{
-      pointer-events:auto;
       border:none;
       background:#fff;
       color:var(--green-dark);
       padding:10px 20px;
       border-radius:999px;
       font-size:15px;
-      min-height:44px;
+      min-height:52px;
       min-width:110px;
       display:inline-flex;
       align-items:center;
@@ -368,6 +276,9 @@
       cursor:pointer;
       transition:transform .15s ease, box-shadow .15s ease, background .2s;
       white-space:nowrap;
+
+      /* ✅ 手機點擊更穩 */
+      touch-action:manipulation;
     }
 
     .nav-btn span{ font-size:18px; }
@@ -384,6 +295,133 @@
       box-shadow:none;
     }
 
+    /* ===== Page2 Catalog (click categories) ===== */
+    .catalog2-layout{
+      display:grid;
+      grid-template-columns:260px 1fr;
+      gap:18px;
+      margin-top:10px;
+    }
+
+    .catalog2-left{
+      border:1px solid #e5e7eb;
+      border-radius:14px;
+      padding:12px;
+      background:#fff;
+    }
+
+    .catalog2-tabs{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .tab-btn{
+      border:1px solid #e2e8f0;
+      background:#f7fafc;
+      color:#111827;
+      border-radius:12px;
+      padding:12px 12px;
+      text-align:left;
+      font-weight:800;
+      cursor:pointer;
+      transition:transform .12s ease, background .2s, box-shadow .2s;
+    }
+
+    .tab-btn:hover{
+      transform:translateY(-1px);
+      background:#f0fff4;
+      box-shadow:0 6px 16px rgba(0,0,0,0.08);
+    }
+
+    .tab-btn.active{
+      background:var(--green-light);
+      border-color:#c6f6d5;
+      box-shadow:inset 0 0 0 2px rgba(47,133,90,0.12);
+    }
+
+    .catalog2-hint{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .catalog2-right{
+      border:1px solid #e5e7eb;
+      border-radius:14px;
+      background:#fff;
+      padding:12px;
+      overflow:auto;
+      min-width:0; /* ✅ 防止被擠爆 */
+    }
+
+    .catalog2-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      padding-bottom:8px;
+      border-bottom:1px solid #e5e7eb;
+      margin-bottom:10px;
+    }
+
+    .catalog2-title{
+      font-size:calc(18px * var(--font-scale));
+      font-weight:900;
+      color:var(--green-dark);
+    }
+
+    .catalog2-count{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .catalog2-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .prod-card{
+      border:1px solid #e2e8f0;
+      border-radius:12px;
+      padding:12px;
+      background:#fff;
+    }
+
+    .prod-name{
+      font-weight:900;
+      font-size:calc(15px * var(--font-scale));
+      display:inline-flex;
+      align-items:baseline;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .prod-code{
+      font-size:calc(12px * var(--font-scale));
+      color:var(--green-dark);
+      background:#f0fff4;
+      border:1px solid #c6f6d5;
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight:800;
+    }
+
+    .prod-row{
+      margin-top:8px;
+      font-size:calc(12px * var(--font-scale));
+      line-height:1.6;
+      color:#111827;
+    }
+
+    .prod-label{
+      font-weight:900;
+      color:var(--green-dark);
+      margin-right:6px;
+    }
+
     /* ===== Form link under wrapper ===== */
     .form-link-area{
       max-width:1280px;
@@ -393,7 +431,6 @@
       font-size:13px;
       color:var(--muted);
     }
-
     .form-link-area p{ margin:0 0 8px; }
 
     .form-link-btn{
@@ -415,50 +452,23 @@
       box-shadow:0 4px 10px rgba(0,0,0,0.12);
     }
 
-        /* ===== RWD ===== */
-
-    /* 平板以下（含手機橫向） */
-    @media (max-width: 900px){
+    /* =========================================================
+       ✅ RWD：只保留 900 / 480 兩段（不再重複打架）
+       ========================================================= */
+    @media (max-width:900px){
       .book-wrapper{ padding:12px; }
       .font-controls{ left:12px; }
 
       .book{ padding:20px 16px 56px; }
-      .page{ padding-bottom:120px; } /* ✅ 留底給 nav */
 
       .vm-grid{ grid-template-columns:1fr; }
 
-      .catalog-layout{ grid-template-columns:1fr; }
-      .product-grid{ grid-template-columns:1fr; }
-
-      /* ✅ catalog2：合併你原本第二段 900px */
       .catalog2-layout{
         grid-template-columns:1fr;
-        height:auto;
       }
-      .catalog2-right{
-        max-height:46vh;
-      }
-
-      /* ✅ nav：手機/平板改 sticky，且拿掉 blur（iOS 點擊變慢元兇） */
-      .nav{
-        position:sticky;
-        bottom:12px;
-
-        margin-top:16px;
-        padding:10px 14px;
-
-        background:rgba(253,252,247,0.96);
-        border:1px solid rgba(229,231,235,0.95);
-        border-radius:16px; /* ✅ 手機/平板用 16px 更穩 */
-
-        z-index:999;
-      }
-
-      .nav-info{ max-width:100%; }
     }
 
-    /* 手機直向 */
-    @media (max-width: 480px){
+    @media (max-width:480px){
       .book-wrapper{ padding:8px; }
       .book-shadow{ padding:0; background:none; }
       .book{ border-radius:0; }
@@ -469,277 +479,14 @@
         gap:6px;
       }
 
-      /* ✅ 手機 nav 只調尺寸，不碰 position/sticky */
-      .nav{
-        padding:10px 10px;
-        gap:10px;
-      }
-
       .nav-info{ display:none; }
 
       .nav-btn{
         width:48%;
         min-width:0;
-        min-height:50px; /* ✅ 更好按 */
         font-size:16px;
       }
     }
-    /* ===== Page2 Catalog (click categories) ===== */
-.catalog2-layout{
-  display:grid;
-  grid-template-columns: 260px 1fr;
-  gap: 18px;
-  margin-top: 10px;
-  height: calc(100% - 140px); /* 讓右側可捲動，避免壓到 nav */
-}
-
-.catalog2-left{
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 12px;
-  background: #ffffff;
-}
-
-.catalog2-tabs{
-  display:flex;
-  flex-direction:column;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.tab-btn{
-  border: 1px solid #e2e8f0;
-  background: #f7fafc;
-  color: #111827;
-  border-radius: 12px;
-  padding: 12px 12px;
-  text-align: left;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform .12s ease, background .2s, box-shadow .2s;
-}
-
-.tab-btn:hover{
-  transform: translateY(-1px);
-  background: #f0fff4;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-}
-
-.tab-btn.active{
-  background: var(--green-light);
-  border-color: #c6f6d5;
-  box-shadow: inset 0 0 0 2px rgba(47,133,90,0.12);
-}
-
-.catalog2-hint{
-  margin-top: 10px;
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.catalog2-right{
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  background: #ffffff;
-  padding: 12px;
-  overflow: auto;
-}
-
-.catalog2-head{
-  display:flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 10px;
-}
-
-.catalog2-title{
-  font-size: calc(18px * var(--font-scale));
-  font-weight: 900;
-  color: var(--green-dark);
-}
-
-.catalog2-count{
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.catalog2-list{
-  display:flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* 產品卡 */
-.prod-card{
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 12px;
-  background: #fff;
-}
-
-.prod-top{
-  display:block;
-}
-
-.prod-name{
-  font-weight: 900;
-  font-size: calc(15px * var(--font-scale));
-  display: inline-flex;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.prod-code{
-  font-size: calc(12px * var(--font-scale));
-  color: var(--green-dark);
-  background: #f0fff4;
-  border: 1px solid #c6f6d5;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-weight: 800;
-}
-
-.prod-row{
-  margin-top: 8px;
-  font-size: calc(12px * var(--font-scale));
-  line-height: 1.6;
-  color: #111827;
-}
-
-.prod-label{
-  font-weight: 900;
-  color: var(--green-dark);
-  margin-right: 6px;
-}
-/* ✅ 修正：手機/平板 catalog2 一定要變單欄，避免右側被擠成細條 */
-@media (max-width: 900px){
-  .catalog2-layout{
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px;
-    height: auto !important;
-  }
-
-  .catalog2-left,
-  .catalog2-right{
-    width: 100% !important;
-    min-width: 0 !important;   /* ✅ 關鍵：避免 grid / flex 子層被擠爆 */
-  }
-
-  .catalog2-right{
-    overflow: auto;
-    max-height: none !important;
-  }
-}
-
-/* ✅ 手機再更緊一點 */
-@media (max-width: 480px){
-  .catalog2-left{ padding: 10px; }
-  .catalog2-right{ padding: 10px; }
-}
-
-/* =========================================================
-   ✅ PATCH v2：iOS 手機點擊修復（請放在 CSS 最後）
-   ========================================================= */
-
-/* ✅ 900 以下：維持 sticky，但拿掉 blur，並確保層級夠高 */
-@media (max-width: 900px){
-  .nav{
-    position: sticky;
-    bottom: 12px;
-    z-index: 9999;
-    pointer-events: auto;
-
-    /* iOS：blur 會讓觸控命中變怪，先不要 */
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-}
-
-/* ✅ 480 以下：真正的 iOS hit-test 修復：關掉 page 的 3D transform */
-@media (max-width: 480px){
-
-
-
-  /* 保持 nav 在底部好按 */
-  .nav{
-    position: sticky;
-    bottom: 12px;
-    z-index: 9999;
-  }
-
-  .nav-btn{
-    min-height: 52px;
-    width: 48%;
-    touch-action: manipulation;
-  }
-
-  .nav-info{
-    display: none;
-  }
-}
-
-/* =========================================================
-   ✅ PATCH v3：保留翻頁 + 修 iOS 按鈕點擊不靈
-   （請放在 CSS 最後）
-   ========================================================= */
-
-/* 1) nav 改成在 book 內固定浮層，不吃 page 捲動 */
-.nav{
-  pointer-events: none;           /* 先讓 nav 本體不吃事件 */
-}
-.nav-btn{
-  pointer-events: auto;           /* 只有按鈕吃事件 */
-  touch-action: manipulation;
-  min-height: 52px;               /* 手機好按 */
-}
-
-/* 2) 手機/平板：把 nav 做成「浮在書本底部」的 overlay */
-@media (max-width: 900px){
-  .book{ position: relative; }
-
-  .nav{
-    position: absolute;           /* ✅ 固定在 book 底部，不跟 page 滾 */
-    left: 14px;
-    right: 14px;
-    bottom: 14px;
-    z-index: 9999;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-
-    padding: 12px 12px;
-    border-radius: 999px;
-
-    background: rgba(253, 252, 247, 0.96);
-    border: 1px solid rgba(226, 232, 240, 0.95);
-
-    /* ✅ iOS：blur 很常讓觸控怪，先關掉 */
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
-  /* ✅ 避免內容被 nav 蓋住：把 page 底部留空間 */
-  .page{
-    padding-bottom: 140px !important;
-  }
-}
-
-/* 3) 手機：nav-info 先隱藏，按鈕占比大，避免擠壓 */
-@media (max-width: 480px){
-  .nav-info{ display: none; }
-  .nav-btn{
-    width: 48%;
-    min-width: 0;
-  }
-}
-
   </style>
 </head>
 
@@ -754,36 +501,38 @@
       <div class="book">
         <!-- Page 1 -->
         <section class="page active" data-page="0">
-          <header class="page-header">
-            <div class="logo">
-              <img src="logo.png" alt="新玉實業 Logo" class="logo-img" />
-              <div class="logo-text">新玉實業股份有限公司</div>
-            </div>
-            <div class="page-number">Page 1 / 2</div>
-          </header>
+          <div class="page-content">
+            <header class="page-header">
+              <div class="logo">
+                <img src="logo.png" alt="新玉實業 Logo" class="logo-img" />
+                <div class="logo-text">新玉實業股份有限公司</div>
+              </div>
+              <div class="page-number">Page 1 / 2</div>
+            </header>
 
-          <h1 class="page-title">公司簡介</h1>
+            <h1 class="page-title">公司簡介</h1>
 
-          <p class="hero-desc">
-            新玉實業於2007年6月成立，「絕不生產傷害人體破壞環境之商品」為創辦宗旨，以健康、環保、安全為企業文化，
-            致力於水性塗料研發製造多年來，協助國內各產業解決塗料環保問題，除降低VOC排放汙染，並可提升產品環保性能，
-            符合歐盟標準更具國際競爭性。
-          </p>
+            <p class="hero-desc">
+              新玉實業於2007年6月成立，「絕不生產傷害人體破壞環境之商品」為創辦宗旨，以健康、環保、安全為企業文化，
+              致力於水性塗料研發製造多年來，協助國內各產業解決塗料環保問題，除降低VOC排放汙染，並可提升產品環保性能，
+              符合歐盟標準更具國際競爭性。
+            </p>
 
-          <div class="vm-grid">
-            <div class="intro-highlight">
-              <div class="vm-head">願景 <span>Vision</span></div>
-              <div class="vm-body">絕不生產傷害人體破壞環境之商品</div>
-            </div>
+            <div class="vm-grid">
+              <div class="intro-highlight">
+                <div class="vm-head">願景 <span>Vision</span></div>
+                <div class="vm-body">絕不生產傷害人體破壞環境之商品</div>
+              </div>
 
-            <div class="intro-highlight">
-              <div class="vm-head">核心價值 <span>Core Value</span></div>
-              <div class="vm-body">健康、環保、安全</div>
-            </div>
+              <div class="intro-highlight">
+                <div class="vm-head">核心價值 <span>Core Value</span></div>
+                <div class="vm-body">健康、環保、安全</div>
+              </div>
 
-            <div class="intro-highlight">
-              <div class="vm-head">使命 <span>Mission</span></div>
-              <div class="vm-body">協助各產業解決塗料環保問題，降低VOC排放汙染，提升產品環保性能</div>
+              <div class="intro-highlight">
+                <div class="vm-head">使命 <span>Mission</span></div>
+                <div class="vm-body">協助各產業解決塗料環保問題，降低VOC排放汙染，提升產品環保性能</div>
+              </div>
             </div>
           </div>
 
@@ -793,59 +542,53 @@
           </footer>
         </section>
 
-        <!-- Page 2：產品目錄 -->
-<section class="page" data-page="1">
-  <header class="page-header">
-    
-    <div class="logo">
-              <img src="logo.png" alt="新玉實業 Logo" class="logo-img" />
-              <div class="logo-text">新玉實業股份有限公司</div>
+        <!-- Page 2 -->
+        <section class="page" data-page="1">
+          <div class="page-content">
+            <header class="page-header">
+              <div class="logo">
+                <img src="logo.png" alt="新玉實業 Logo" class="logo-img" />
+                <div class="logo-text">新玉實業股份有限公司</div>
+              </div>
+              <div class="page-number">Page 2 / 2</div>
+            </header>
+
+            <h1 class="page-title">產品目錄</h1>
+            <p class="page-subtitle">請先選擇分類，右側會顯示對應產品清單（產品名稱／適用／特性）。</p>
+
+            <div class="catalog2-layout">
+              <aside class="catalog2-left">
+                <div class="catalog-sidebar-title">分類</div>
+                <div class="catalog2-tabs" id="catalogTabs">
+                  <button class="tab-btn active" data-cat="水泥牆漆">水泥牆漆</button>
+                  <button class="tab-btn" data-cat="金屬">金屬</button>
+                  <button class="tab-btn" data-cat="木器">木器</button>
+                  <button class="tab-btn" data-cat="特殊">特殊</button>
+                </div>
+                <div class="catalog2-hint">點選分類後，右側會更新產品列表。</div>
+              </aside>
+
+              <main class="catalog2-right">
+                <div class="catalog2-head">
+                  <div class="catalog2-title" id="catTitle">水泥牆漆</div>
+                  <div class="catalog2-count" id="catCount"></div>
+                </div>
+                <div class="catalog2-list" id="productList"></div>
+              </main>
             </div>
-    <div class="page-number">Page 2 / 2</div>
-  </header>
+          </div>
 
-  <h1 class="page-title">產品目錄</h1>
-  <p class="page-subtitle">請先選擇分類，右側會顯示對應產品清單（產品名稱／適用／特性）。</p>
-
-  <div class="catalog2-layout">
-    <!-- 左側分類 -->
-    <aside class="catalog2-left">
-      <div class="catalog-sidebar-title">分類</div>
-
-      <div class="catalog2-tabs" id="catalogTabs">
-        <button class="tab-btn active" data-cat="水泥牆漆">水泥牆漆</button>
-        <button class="tab-btn" data-cat="金屬">金屬</button>
-        <button class="tab-btn" data-cat="木器">木器</button>
-        <button class="tab-btn" data-cat="特殊">特殊</button>
-      </div>
-
-      <div class="catalog2-hint">點選分類後，右側會更新產品列表。</div>
-    </aside>
-
-    <!-- 右側產品清單 -->
-    <main class="catalog2-right">
-      <div class="catalog2-head">
-        <div class="catalog2-title" id="catTitle">水泥牆漆</div>
-        <div class="catalog2-count" id="catCount"></div>
-      </div>
-
-      <div class="catalog2-list" id="productList"></div>
-    </main>
-  </div>
-
-  <footer class="nav">
-    <button class="nav-btn" id="prevPage">
-      <span>⬅</span>上一頁
-    </button>
-    <div class="nav-info">選分類 → 看產品（名稱 / 適用 / 特性）</div>
-  </footer>
-</section>
+          <footer class="nav">
+            <button class="nav-btn" id="prevPage"><span>⬅</span>上一頁</button>
+            <div class="nav-info">選分類 → 看產品（名稱 / 適用 / 特性）</div>
+          </footer>
+        </section>
       </div>
     </div>
   </div>
 
   <div class="form-link-area">
-    <p>{3}如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
+    <p>如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
     <a href="https://forms.gle/Nf5jKBXVDjChkryTA" target="_blank" rel="noopener" class="form-link-btn">填寫線上表單</a>
   </div>
 
@@ -871,11 +614,8 @@
           p.classList.remove("flip-in-from-right", "flip-in-from-left", "active");
         });
 
-        if (direction === "next") {
-          nextPage.classList.add("flip-in-from-right");
-        } else {
-          nextPage.classList.add("flip-in-from-left");
-        }
+        if (direction === "next") nextPage.classList.add("flip-in-from-right");
+        else nextPage.classList.add("flip-in-from-left");
 
         nextPage.classList.add("active");
         current = targetIndex;
@@ -891,344 +631,120 @@
     // Font scale controls
     const root = document.documentElement;
     let fontScale = 1;
-
     document.querySelectorAll(".font-controls button").forEach(btn => {
       btn.addEventListener("click", () => {
         if (btn.dataset.size === "+") fontScale = Math.min(fontScale + 0.1, 1.4);
         else fontScale = Math.max(fontScale - 0.1, 0.8);
-
         root.style.setProperty("--font-scale", fontScale);
       });
     });
-    // ===== Catalog data from Excel (workbook) =====
-const catalogData = {"水泥牆漆":[{"code":"DG-617","name":"水泥強化劑","usage":"應用為屋頂水泥砂漿之強力接著劑或用於RC結構凹洞修補",}],
-"金屬":[{"code":"F-545A","name":"水性防銹底漆","usage":"適用於鍍鋅鋼板、黑鐵板等金屬底材","features":"對困難底材有特別密著效果，除具備良好防蝕作用，耐水性及耐醇性亦佳，具有彈性及基本防銹功能，做為隔熱底漆使用可得絕佳效果"},{"code":"F-547","name":"水性防銹底漆","usage":"適用於一般金屬底材防銹打底","features":"防蝕性佳、附著力佳，可作金屬面漆前道"},{"code":"F-548","name":"水性防銹底漆","usage":"金屬底材防銹打底","features":"耐水耐蝕，提升面漆耐久性"},{"code":"F-549","name":"水性防銹底漆","usage":"金屬底材防銹處理","features":"防銹、密著性良好"},{"code":"F-550","name":"水性隔熱底漆","usage":"金屬屋頂隔熱打底","features":"隔熱系統底層，提升隔熱面層效果"},{"code":"F-551","name":"水性隔熱面漆","usage":"鐵皮/金屬屋頂隔熱面層","features":"隔熱降溫、耐候耐水"},{"code":"F-552","name":"水性金屬面漆","usage":"金屬表面保護塗裝","features":"耐候、附著力佳，適用戶外金屬"},{"code":"F-553","name":"水性金屬面漆","usage":"金屬面層裝飾與保護","features":"耐候耐水，施工便利"},{"code":"F-554","name":"水性金屬面漆","usage":"金屬外觀保護","features":"外觀均勻、耐久性佳"},{"code":"F-555","name":"水性防鏽面漆","usage":"防鏽系統面層","features":"防鏽保護與外觀兼具"},{"code":"F-556","name":"水性金屬防鏽漆","usage":"金屬底材防鏽塗裝","features":"防鏽性能提升、耐候耐水"}],
-"木器":[{"code":"R-679-30","name":"木器底漆","usage":"適用於各式木器基材底層","features":"快乾可快速施工，具高度耐水性與保護性，並維持貼皮木料自然質感"},{"code":"R-679-40","name":"木器底漆","usage":"木器底層處理","features":"施工性佳、提升後續面漆附著"},{"code":"R-679-50","name":"木器底漆","usage":"木器打底","features":"乾燥快、保留木紋"},{"code":"R-680-30","name":"木器面漆","usage":"木器表面保護","features":"耐水耐磨，提升外觀與耐久"},{"code":"R-680-40","name":"木器面漆","usage":"木器面層塗裝","features":"透明/半透明效果，保留質感"},{"code":"R-680-50","name":"木器面漆","usage":"木器外觀保護","features":"耐黃化、耐磨耗"},{"code":"R-681","name":"木器透明保護漆","usage":"木器透明保護","features":"透明不變色，保護性佳"},{"code":"R-682","name":"木器著色底漆","usage":"木器著色/打底","features":"色澤均勻，利於後續面漆"},{"code":"R-683","name":"木器耐磨面漆","usage":"木器耐磨保護","features":"耐磨抗刮，適用高使用頻率場域"},{"code":"R-684","name":"木器戶外保護漆","usage":"戶外木器保護","features":"耐候性提升，降低戶外老化"},{"code":"R-685","name":"木器防霉漆","usage":"木器防霉保護","features":"抑制霉菌生長，適合潮濕環境"},{"code":"R-686","name":"木器快乾漆","usage":"快速施工木器塗裝","features":"乾燥速度快，提升施工效率"}],
-"特殊":[{"code":"RE-02","name":"膏狀環保去漆劑","usage":"古蹟或建築物之木材、金屬去除舊漆，適合立面使用","features":"去除舊漆不傷底材，可幫助重工（返工）"},{"code":"DG-102","name":"投影螢幕漆","usage":"可塗裝於各種牆面如水泥牆、隔間木板、各種防火板材等，最為投影螢幕使用","features":"本產品好施作，滾塗、刷塗或噴塗皆可、高畫質清晰色飽和度佳，不眩光，適合家庭劇院、企業會議簡報、商業廣告及展覽空間布置用途，可視角為市售品之2倍"},{"code":"DG-110","name":"黑板漆","usage":"可塗裝於牆面、木板等做書寫用途","features":"可粉筆書寫、易擦拭，適合教室/展示區"},{"code":"DG-111","name":"磁性底漆","usage":"搭配面漆形成可吸附磁鐵表面","features":"可吸磁，適合作公告牆/展示牆"},{"code":"DG-112","name":"夜光漆","usage":"牆面/標示夜光用途","features":"蓄光發光，適合指示/裝飾"},{"code":"DG-113","name":"防滑漆","usage":"地坪/階梯防滑塗裝","features":"增加摩擦係數，降低滑倒風險"},{"code":"DG-114","name":"耐化學塗料","usage":"需耐化學腐蝕環境塗裝","features":"耐化學性佳，適合特殊工業環境"},{"code":"DG-115","name":"防塗鴉塗料","usage":"外牆防塗鴉保護","features":"降低塗鴉附著，易清潔"},{"code":"DG-116","name":"防火塗料","usage":"需防火要求之基材塗裝","features":"提升耐燃性，符合特定防火需求"}]};
 
-// ✅ 覆蓋：水泥牆漆（以你提供的 29 筆為準 + 特性精簡版）
-catalogData["水泥牆漆"] = [
-  { code:"DG-617", name:"水泥強化劑",
-    usage:"屋頂水泥砂漿強力接著；RC結構凹洞修補",
-    features:"提升表面強度與抗化性；對舊混凝土/磚/木材附著佳；性價比高" },
+    // ===== Catalog data (final) =====
+    const catalogData = {
+      "水泥牆漆": [
+        { code:"DG-617", name:"水泥強化劑", usage:"屋頂水泥砂漿強力接著；RC結構凹洞修補", features:"提升表面強度與抗化性；對舊混凝土/磚/木材附著佳；性價比高" },
+        { code:"DG-618", name:"水泥防水漆", usage:"建物細紋裂縫防水；可作防水/隔熱面漆之接著底層", features:"填補細裂防水；可調色；適合作為防水/隔熱系統底層" },
+        { code:"GL-553", name:"水泥接著劑", usage:"水泥砂漿強力接著；木材/水泥/石膏等提升漆料附著", features:"接著力強；可層間灌漿；降低層間龜裂；提升後續塗裝密著" },
+        { code:"DG-1152-1AW", name:"白色隔熱底漆", usage:"水泥/金屬/木料等底材，或各式防水材表面", features:"提升隔熱塗料密著性與耐久度；適用多種基材" },
+        { code:"EX-009", name:"水性隔熱塗料", usage:"室外屋頂、RC結構賣場、鐵皮屋、水泥牆、貨櫃屋、冷水配管、木屋等", features:"奈米陶瓷材料；隔熱耐久；兼具防水/防蝕/耐溫；延展佳不易龜裂" },
+        { code:"DG-653", name:"水性隔熱塗料", usage:"室外屋頂、RC結構賣場、鐵皮屋、水泥牆、貨櫃屋、冷水配管、木屋等", features:"防水防蝕耐久；耐溫；抑制噪音；隔冷隔熱；延展佳不易龜裂" },
+        { code:"DG-728", name:"室內外水泥牆漆", usage:"一般建築牆面或水泥牆、柱", features:"耐水耐候；耐酸鹼；快乾好施工；環保無毒" },
+        { code:"DG-524-0", name:"耐磨消光面漆", usage:"隔熱塗料/牆面表層保護；亦可外牆自潔用途", features:"耐水耐候；耐化學；耐熱耐磨；需2K架橋；具自潔效果" },
+        { code:"DGW-101", name:"遠紅外線負離子養生漆（白色/百合白）", usage:"室內牆面：居家、辦公室、工廠、醫院、學校、賣場等", features:"調節溫溼度；防霉抗菌；抑制壁癌；吸附分解異味" },
+        { code:"DG-6307", name:"含矽金屬、磁磚保護漆", usage:"無塵室廠房新作/翻修；金屬/磁磚/玻璃/水泥地面等", features:"密著性佳；低氣味；適合密閉空間；金屬防護保養" },
+        { code:"DG-6363", name:"含矽金屬、磁磚保護漆", usage:"無塵室廠房新作/翻修；金屬/磁磚/玻璃/水泥地面等", features:"密著性佳；低氣味；適合密閉空間；金屬防護保養" },
+        { code:"DG-598-20", name:"奈米水泥撥水劑", usage:"混凝土、磚塊、天然石材、石灰岩、大理石、花崗岩及木材等", features:"延長建築壽命、降低維護；改善接縫處滲水風險" },
+        { code:"DG-566", name:"奈米水泥防水劑", usage:"磚塊/混凝土/石材/步道/停車層/橋體/洗石抿石外壁等防水抗污養護", features:"經濟型；自潔撥水；抗污抗風化；延長建物使用壽命" },
+        { code:"DG-8866-11", name:"水性壁癌漆", usage:"建築水泥牆面（室內外皆可）", features:"抗菌防霉；抑制砂質化剝落" },
+        { code:"DG-8877", name:"水性微膜撥水劑", usage:"水泥/混凝土/各種石材/木材；亦可用於紙類、紡織品", features:"微膜型防水；耐候佳；不含APEO；清水模防水漬髒污" },
+        { code:"DG-617-40", name:"水泥防壁癌漆", usage:"嚴重壁癌牆面強效封閉", features:"附著力強；封閉隔絕滲色；適用多種基材" },
+        { code:"DG-617-80", name:"水泥防壁癌漆", usage:"嚴重壁癌牆面強效封閉", features:"附著力強；封閉隔絕滲色；適用多種基材" },
+        { code:"DG-652A", name:"封閉底漆", usage:"水泥牆面封油；改善密著；防吐黃；室內外通用", features:"單液型好操作；對油汙封閉佳；可配IS001架橋劑加強" },
+        { code:"EP-003", name:"環保無溶劑聚脲", usage:"各式地坪；高強度防水、耐酸鹼廠房；鋼構/船舶/風機；耐磨車道", features:"厚膜施工；耐水耐酸鹼耐衝擊；延展耐磨；100%固含、低VOC" },
+        { code:"DG-7522", name:"水泥養護劑", usage:"稀釋3–4倍噴灑於新灌注水泥表面，防止乾燥龜裂", features:"快速滲入；降低乾縮龜裂；利後續施工；提升外觀與防水性" },
+        { code:"DG-7663", name:"超彈性防水樹脂", usage:"與水泥砂漿混合：窗框/門框、玻璃、金屬、礦纖板等接著與填縫", features:"超彈性防水防裂；接著性佳；抗汙不易發霉；耐候高彈性" },
+        { code:"DG-689H", name:"微水泥專用防水底漆", usage:"微水泥耐水底漆", features:"封閉孔隙；強化基材；增強耐水性" },
+        { code:"NA-9023-89", name:"無機底材強化劑", usage:"水泥板/洋灰板/矽酸鈣板/礦纖板等底材接著用", features:"強化底材；提升密著；高防水耐水解" },
+        { code:"GS-5056", name:"玻璃磁磚底漆", usage:"金屬/磁磚/玻璃/水泥地面等", features:"密著性佳；耐水佳；高硬度；高透明度" },
+        { code:"DG-791", name:"防水防霉密封膠", usage:"窗框/門框、玻璃、金屬、礦纖板等建材與工業領域", features:"高濕可施工；接著性佳；抗汙不易發霉；耐候高彈性" },
+        { code:"DG-723", name:"易潔面漆", usage:"水泥牆、洗石面、上過水泥漆的內外牆；保護底漆不褪色", features:"耐水耐候；快乾；耐刷洗；多道可維持5–8年" },
+        { code:"DG-7513-0", name:"單液超耐磨面漆", usage:"水泥地坪或木質地板耐磨保護；工廠/商場/球場/辦公/居家等", features:"高效能；超耐磨易清潔；好修補；施工便利" },
+        { code:"DG-5179B-0", name:"單液超耐磨面漆", usage:"水泥地坪或木質地板耐磨保護；工廠/商場/球場/辦公/居家等", features:"經濟型；耐磨易清潔；好修補；施工便利" },
+        { code:"DG-1152C", name:"L角高彈性填縫劑", usage:"建築結構L角防水填縫：屋頂、廚房、浴室牆角等易滲水處", features:"高填縫與密著；防水佳；省工省時；可取代傳統工法" },
+      ],
+      "金屬": [
+        { code:"F-545A", name:"水性防銹底漆", usage:"一般金屬防銹底漆", features:"困難底材密著佳；防蝕耐水耐醇；具彈性與防水；防銹強；可作隔熱底漆" },
+        { code:"F-545B", name:"水性防銹底漆", usage:"一般金屬防銹底漆", features:"困難底材密著佳；防蝕耐水耐醇；具彈性；基本防銹；可作隔熱底漆" },
+        { code:"DG-576", name:"水性金屬底漆", usage:"金屬底漆（不需強防銹者）", features:"適用鐵皮屋/烤漆浪板等；作為接著底漆" },
+        { code:"EX-009", name:"水性隔熱塗料", usage:"室外屋頂、RC結構賣場、鐵皮屋、水泥牆、貨櫃屋、冷水配管、木屋等", features:"奈米陶瓷材料；隔熱耐久；防水防蝕耐溫；抑制噪音；延展佳不龜裂" },
+        { code:"DG-653", name:"水性隔熱塗料", usage:"室外屋頂、RC結構賣場、鐵皮屋、水泥牆、貨櫃屋、冷水配管、木屋等", features:"防水防蝕耐久；耐溫；抑制噪音；延展佳不龜裂" },
+        { code:"DG-524", name:"耐磨消光面漆", usage:"隔熱塗料/牆面表層保護；亦可外牆自潔用途", features:"耐水耐候；耐化學；耐熱耐磨；需2K架橋；具自潔效果" },
+        { code:"DG-6301A", name:"水性金屬漆", usage:"戶外鐵皮屋、鐵門窗、鐵欄杆修補粉刷", features:"耐水耐候；快乾；耐刷洗；噴塗2道以上可維持約5–8年；具自潔" },
+        { code:"DG-6307", name:"含矽金屬、磁磚保護漆", usage:"無塵式廠房新作/翻修；金屬/磁磚/玻璃/水泥地面等", features:"密著性佳；極低氣味；適合密閉空間；金屬防護保養" },
+        { code:"DGF-6677W", name:"金屬防鏽隔熱白底漆", usage:"舊漆或新底材金屬面；具基本防鏽性能", features:"密著佳；低氣味；適合密閉空間；作防護保養底層" },
+        { code:"DGF-6004", name:"水性轉銹劑", usage:"金屬鏽蝕處抑銹、防閃銹", features:"抑制鏽蝕擴大；產生鈍化；提升後續防鏽漆附著" },
+        { code:"DGF-6150", name:"水性轉銹劑", usage:"金屬鏽蝕處抑銹、防閃銹", features:"抑制鏽蝕擴大；產生鈍化；提升後續防鏽漆附著" },
+      ],
+      "木器": [
+        { code:"R-679-30", name:"木器底漆", usage:"室內木器底漆，可搭配本公司各系列面漆", features:"好施工、快乾、好打磨；展色與融合佳；漆膜透析度高" },
+        { code:"DG-628-0", name:"羽膜漆（類自然塗裝漆）", usage:"貼皮板材大面積施工，底面兩用", features:"木皮不變色、自然紋路；快乾；耐水性佳" },
+        { code:"DG-652A", name:"封閉底漆", usage:"油性木料封油、防滲色或白底防吐油，室內外通用", features:"單液型；抑制單寧酸/油脂滲出；維持白色不黃變" },
+        { code:"TR-661-2", name:"耐酸鹼特級面漆", usage:"搭配 R-679-30 底漆使用之 PU 型保護面漆", features:"快耐水；耐化學；抗刮；高耐熱；硬度約 1H–2H" },
+        { code:"DG-524-2", name:"耐磨消光面漆", usage:"櫥櫃、桌面、地板等高耐磨需求木器", features:"耐水耐熱耐酒精；2K 架橋；可自乾；木紋清晰" },
+        { code:"DG-5179B", name:"高硬度面漆", usage:"消光木地板、桌面等高耐磨耐化需求", features:"單液型；熟化後硬度可達 3H；耐化性佳" },
+        { code:"GL-633", name:"底面兩用透氣漆", usage:"各式天然木料，底面兩用，室內外通用", features:"透氣性佳；保留木頭氣味；兼具保護效果" },
+        { code:"DG-63321B", name:"天然植物護木推油", usage:"高級原木家具防裂保護，可調色", features:"天然植物油；顯色保水；防裂防霉；易清潔保養" },
+        { code:"DG-628", name:"室外底面用保護漆", usage:"小木屋、景觀步道等戶外木作著色/修色", features:"韌性佳耐候不龜裂；不易褪色；SGS 耐候 500hrs" },
+        { code:"DG-6330", name:"高功能滲透型防裂漆", usage:"高級或戶外木料防裂、防腐（可調色）", features:"高透析透氣；防鐵釘銹化；適用多種木材" },
+        { code:"DG-617-10", name:"戶外護木漆", usage:"小木屋、景觀步道等戶外木作，高溫高濕環境適用", features:"韌性佳耐候不龜裂；不易褪色；SGS 耐候 500hrs" },
+        { code:"DG-5179B", name:"單液超耐磨面漆", usage:"水泥地坪或木地板耐磨保護（經濟型）", features:"超耐磨；易清潔好修補；單液型；施工便利" },
+      ],
+      "特殊": [
+        { code:"RE-02", name:"膏狀環保去漆劑", usage:"古蹟或建築物木材、金屬舊漆去除，適合立面施工", features:"去除舊漆不傷底材；有助於重工處理" },
+        { code:"DG-102", name:"投影螢幕漆", usage:"水泥牆、隔間木板、防火板等牆面作投影螢幕使用", features:"滾/刷/噴皆可；畫質清晰色彩飽和；不眩光；適用劇院/簡報" },
+        { code:"DG-6318B", name:"透明背投影螢幕漆", usage:"透明 PET、玻璃、壓克力板作正/背投影螢幕", features:"室內外；耐水耐候；快乾；畫質清晰不炫光、具立體感" },
+        { code:"NTF-006", name:"水性防火漆", usage:"木材、塑膠、金屬、FRP 等需防火要求之基材", features:"膨脹型；快乾好操作；所需膜厚較薄即可達效" },
+        { code:"IS-6556", name:"環保硬化劑（高光用）", usage:"DG-524H 高光系列專用硬化劑", features:"高光、高硬度用架橋劑" },
+        { code:"IS-6556A", name:"環保硬化劑（消光用）", usage:"DG-524 消光系列專用硬化劑", features:"消光、高硬度用架橋劑" },
+      ]
+    };
 
-  { code:"DG-618", name:"水泥防水漆",
-    usage:"建物細紋裂縫防水；可作防水/隔熱面漆之接著底層",
-    features:"填補細裂防水；可調色；適合作為防水/隔熱系統底層" },
+    function renderCategory(cat){
+      const listEl = document.getElementById("productList");
+      const titleEl = document.getElementById("catTitle");
+      const countEl = document.getElementById("catCount");
 
-  { code:"GL-553", name:"水泥接著劑",
-    usage:"水泥砂漿強力接著；木材/水泥/石膏等提升漆料附著",
-    features:"接著力強；可層間灌漿；降低層間龜裂；提升後續塗裝密著" },
+      const items = catalogData[cat] || [];
+      titleEl.textContent = cat;
+      countEl.textContent = `共 ${items.length} 項`;
 
-  { code:"DG-1152-1AW", name:"白色隔熱底漆",
-    usage:"水泥/金屬/木料等底材，或各式防水材表面",
-    features:"提升隔熱塗料密著性與耐久度；適用多種基材" },
+      listEl.innerHTML = items.map(p => `
+        <div class="prod-card">
+          <div class="prod-name">
+            ${p.name}
+            <span class="prod-code">${p.code}</span>
+          </div>
+          <div class="prod-row"><span class="prod-label">適用：</span>${p.usage || ""}</div>
+          <div class="prod-row"><span class="prod-label">特性：</span>${p.features || ""}</div>
+        </div>
+      `).join("");
+    }
 
-  { code:"EX-009", name:"水性隔熱塗料",
-    usage:"室外屋頂、RC結構賣場、鐵皮屋、水泥牆、貨櫃屋、冷水配管、木屋等",
-    features:"奈米陶瓷材料；隔熱耐久；兼具防水/防蝕/耐溫；延展佳不易龜裂" },
+    (function initCatalog(){
+      const tabs = document.getElementById("catalogTabs");
+      if(!tabs) return;
 
-  { code:"DG-653", name:"水性隔熱塗料",
-    usage:"室外屋頂、RC結構賣場、鐵皮屋、水泥牆、貨櫃屋、冷水配管、木屋等",
-    features:"防水防蝕耐久；耐溫；抑制噪音；隔冷隔熱；延展佳不易龜裂" },
+      tabs.addEventListener("click", (e) => {
+        const btn = e.target.closest(".tab-btn");
+        if(!btn) return;
 
-  { code:"DG-728", name:"室內外水泥牆漆",
-    usage:"一般建築牆面或水泥牆、柱",
-    features:"耐水耐候；耐酸鹼；快乾好施工；環保無毒" },
+        tabs.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderCategory(btn.dataset.cat);
+      });
 
-  { code:"DG-524-0", name:"耐磨消光面漆",
-    usage:"隔熱塗料/牆面表層保護；亦可外牆自潔用途",
-    features:"耐水耐候；耐化學；耐熱耐磨；需2K架橋；具自潔效果" },
-
-  { code:"DGW-101", name:"遠紅外線負離子養生漆（白色/百合白）",
-    usage:"室內牆面：居家、辦公室、工廠、醫院、學校、賣場等",
-    features:"調節溫溼度；防霉抗菌；抑制壁癌；吸附分解異味（甲醛/氨等）" },
-
-  { code:"DG-6307", name:"含矽金屬、磁磚保護漆",
-    usage:"無塵室廠房新作/翻修；金屬/磁磚/玻璃/水泥地面等",
-    features:"密著性佳；低氣味；適合密閉空間；金屬防護保養" },
-
-  { code:"DG-6363", name:"含矽金屬、磁磚保護漆",
-    usage:"無塵室廠房新作/翻修；金屬/磁磚/玻璃/水泥地面等",
-    features:"密著性佳；低氣味；適合密閉空間；金屬防護保養" },
-
-  { code:"DG-598-20", name:"奈米水泥撥水劑",
-    usage:"混凝土、磚塊、天然石材、石灰岩、大理石、花崗岩及木材等",
-    features:"延長建築壽命、降低維護；外觀保新；改善接縫處滲水風險" },
-
-  { code:"DG-566", name:"奈米水泥防水劑",
-    usage:"磚塊/混凝土/石材/步道/停車層/橋體/洗石抿石外壁等防水抗污養護",
-    features:"經濟型；自潔撥水；抗污抗風化；延長建物使用壽命" },
-
-  { code:"DG-8866-11", name:"水性壁癌漆",
-    usage:"建築水泥牆面（室內外皆可）",
-    features:"抗菌防霉；抑制壁癌造成的砂質化與剝落" },
-
-  { code:"DG-8877", name:"水性微膜撥水劑",
-    usage:"水泥/混凝土/各種石材/木材；亦可用於紙類、紡織品",
-    features:"微膜型防水；耐候佳；不含APEO；適合清水模防水漬與髒污" },
-
-  { code:"DG-617-40", name:"水泥防壁癌漆",
-    usage:"嚴重壁癌牆面強效封閉",
-    features:"附著力強；封閉隔絕滲色；適用多種基材" },
-
-  { code:"DG-617-80", name:"水泥防壁癌漆",
-    usage:"嚴重壁癌牆面強效封閉",
-    features:"附著力強；封閉隔絕滲色；適用多種基材" },
-
-  { code:"DG-652A", name:"封閉底漆",
-    usage:"水泥牆面封油；改善密著；防止吐黃；室內外通用",
-    features:"單液型好操作；對油汙封閉佳；可配IS001架橋劑加強" },
-
-  { code:"EP-003", name:"環保無溶劑聚脲",
-    usage:"各式地坪；高強度防水、耐酸鹼廠房；鋼構/船舶/風機；耐磨車道",
-    features:"厚膜施工；耐水耐酸鹼耐衝擊；延展耐磨；雙組分100%固含、低VOC" },
-
-  { code:"DG-7522", name:"水泥養護劑",
-    usage:"稀釋3–4倍噴灑於新灌注水泥表面，防止乾燥龜裂",
-    features:"快速滲入；降低乾縮龜裂；利後續施工；提升外觀與防水性" },
-
-  { code:"DG-7663", name:"超彈性防水樹脂",
-    usage:"與水泥砂漿混合：窗框/門框、玻璃、金屬、礦纖板等接著與填縫",
-    features:"超彈性防水防裂；接著性佳；抗汙不易發霉；耐候高彈性" },
-
-  { code:"DG-689H", name:"微水泥專用防水底漆",
-    usage:"微水泥耐水底漆",
-    features:"封閉孔隙；強化基材；增強耐水性" },
-
-  { code:"NA-9023-89", name:"無機底材強化劑",
-    usage:"水泥板/洋灰板/矽酸鈣板/礦纖板等底材接著用",
-    features:"強化底材；提升密著；高防水耐水解（可連續泡水不水解）" },
-
-  { code:"GS-5056", name:"玻璃磁磚底漆",
-    usage:"金屬/磁磚/玻璃/水泥地面等",
-    features:"密著性佳；耐水佳；高硬度；高透明度" },
-
-  { code:"DG-791", name:"防水防霉密封膠",
-    usage:"窗框/門框、玻璃、金屬、礦纖板等建材與工業領域填縫接著",
-    features:"高濕可施工；接著性佳；抗汙不易發霉；耐候高彈性" },
-
-  { code:"DG-723", name:"易潔面漆",
-    usage:"水泥牆、洗石面、上過水泥漆的內外牆；保護底漆不褪色",
-    features:"耐水耐候；快乾；耐刷洗；可連續施工；多道可維持5–8年" },
-
-  { code:"DG-7513-0", name:"單液超耐磨面漆",
-    usage:"水泥地坪或木質地板耐磨保護；工廠/商場/球場/辦公/居家等",
-    features:"高效能；超耐磨易清潔；好修補；單液施工便利；延長年限" },
-
-  { code:"DG-5179B-0", name:"單液超耐磨面漆",
-    usage:"水泥地坪或木質地板耐磨保護；工廠/商場/球場/辦公/居家等",
-    features:"經濟型；耐磨易清潔；好修補；單液施工便利；延長年限" },
-
-  { code:"DG-1152C", name:"L角高彈性填縫劑",
-    usage:"建築結構L角防水填縫：屋頂、廚房、浴室牆角等易滲水處",
-    features:"高填縫與密著；防水佳；可取代傳統工法；省工省時降成本" },
-];
-
-// ✅ 覆蓋：金屬（以你提供的 11 筆為準 + 特性精簡版）
-catalogData["金屬"] = [
-  { code:"F-545A", name:"水性防銹底漆",
-    usage:"一般金屬防銹底漆",
-    features:"對困難底材密著佳；防蝕＋耐水/耐醇；具彈性與良好防水；防銹強；可作隔熱底漆" },
-
-  { code:"F-545B", name:"水性防銹底漆",
-    usage:"一般金屬防銹底漆",
-    features:"對困難底材密著佳；防蝕＋耐水/耐醇；具彈性；基本防銹；可作隔熱底漆" },
-
-  { code:"DG-576", name:"水性金屬底漆",
-    usage:"金屬底漆（不需強防銹者）",
-    features:"適用鐵皮屋/烤漆浪板等；作為接著底漆使用" },
-
-  { code:"EX-009", name:"水性隔熱塗料",
-    usage:"室外屋頂、RC結構賣場、鐵皮屋、水泥牆、貨櫃屋、冷水配管、木屋等",
-    features:"奈米陶瓷材料；隔熱耐久；防水/防蝕/耐溫；抑制噪音；延展佳不易龜裂；施工安全" },
-
-  { code:"DG-653", name:"水性隔熱塗料",
-    usage:"室外屋頂、RC結構賣場、鐵皮屋、水泥牆、貨櫃屋、冷水配管、木屋等",
-    features:"防水防蝕耐久；耐溫；抑制噪音；隔冷隔熱；延展佳不易龜裂；施工安全" },
-
-  { code:"DG-524", name:"耐磨消光面漆",
-    usage:"隔熱塗料/牆面表層保護；亦可外牆自潔用途",
-    features:"耐水耐候；耐化學；耐熱耐磨；需2K架橋；可自乾；具自潔效果" },
-
-  { code:"DG-6301A", name:"水性金屬漆",
-    usage:"戶外鐵皮屋、鐵門窗、鐵欄杆修補粉刷",
-    features:"耐水耐候；快乾；耐刷洗；可連續施工；噴塗2道以上可維持約5–8年；具自潔效果" },
-
-  { code:"DG-6307", name:"含矽金屬、磁磚保護漆",
-    usage:"無塵式廠房新作/翻修；金屬/磁磚/玻璃/水泥地面等",
-    features:"金屬防護保養用；密著性佳；極低氣味；適合通風不良/無塵室等密閉空間" },
-
-  { code:"DGF-6677W", name:"金屬防鏽隔熱白底漆",
-    usage:"舊漆或新底材金屬面；具基本防鏽性能",
-    features:"密著性佳；低氣味；適合通風不良/密閉空間；可作金屬防護保養底層" },
-
-  { code:"DGF-6004", name:"水性轉銹劑",
-    usage:"金屬鏽蝕處抑銹、防閃銹",
-    features:"抑制鏽蝕擴大；產生鈍化效果；提升後續防鏽漆附著" },
-
-  { code:"DGF-6150", name:"水性轉銹劑",
-    usage:"金屬鏽蝕處抑銹、防閃銹",
-    features:"抑制鏽蝕擴大；產生鈍化效果；提升後續防鏽漆附著" },
-];
-
-catalogData["木器"] = [
-  {
-    code: "R-679-30",
-    name: "木器底漆",
-    usage: "室內木器底漆，可搭配本公司各系列面漆",
-    features: "好施工、快乾、好打磨；展色與融合佳；漆膜透析度高"
-  },
-  {
-    code: "DG-628-0",
-    name: "羽膜漆（類自然塗裝漆）",
-    usage: "貼皮板材大面積施工，底面兩用",
-    features: "木皮不變色、自然紋路；快乾；耐水性佳，保留木質感"
-  },
-  {
-    code: "DG-652A",
-    name: "封閉底漆",
-    usage: "油性木料封油、防滲色或白底防吐油，室內外通用",
-    features: "單液型；抑制單寧酸/油脂滲出；維持白色不黃變"
-  },
-  {
-    code: "TR-661-2",
-    name: "耐酸鹼特級面漆",
-    usage: "搭配 R-679-30 底漆使用之 PU 型保護面漆",
-    features: "快耐水；耐化學；抗刮；高耐熱；硬度約 1H–2H"
-  },
-  {
-    code: "DG-524-2",
-    name: "耐磨消光面漆",
-    usage: "櫥櫃、桌面、地板等高耐磨需求木器",
-    features: "耐水耐熱耐酒精；2K 架橋；可自乾；木紋清晰"
-  },
-  {
-    code: "DG-5179B",
-    name: "高硬度面漆",
-    usage: "消光木地板、桌面等高耐磨耐化需求",
-    features: "單液型；熟化後硬度可達 3H；耐化性佳"
-  },
-  {
-    code: "GL-633",
-    name: "底面兩用透氣漆",
-    usage: "各式天然木料，底面兩用，室內外通用",
-    features: "透氣性佳；保留木頭氣味；兼具木材保護效果"
-  },
-  {
-    code: "DG-63321B",
-    name: "天然植物護木推油",
-    usage: "高級原木家具防裂保護，可調色",
-    features: "天然植物油；顯色保水；防裂防霉；易清潔保養"
-  },
-  {
-    code: "DG-628",
-    name: "室外底面用保護漆",
-    usage: "小木屋、景觀步道等戶外木作著色/修色",
-    features: "韌性佳、耐候不龜裂；不易褪色；SGS 耐候 500hrs"
-  },
-  {
-    code: "DG-6330",
-    name: "高功能滲透型防裂漆",
-    usage: "高級或戶外木料防裂、防腐（可調色）",
-    features: "天然植物油；高透析；透氣不影響物性；防鐵釘銹化"
-  },
-  {
-    code: "DG-617-10",
-    name: "戶外護木漆",
-    usage: "小木屋、景觀步道等戶外木作，高溫高濕環境適用",
-    features: "韌性佳、耐候不龜裂；不易褪色；SGS 耐候 500hrs"
-  },
-  {
-    code: "DG-5179B",
-    name: "單液超耐磨面漆",
-    usage: "水泥地坪或木地板耐磨保護（經濟型）",
-    features: "超耐磨；易清潔好修補；單液型；施工便利"
-  }
-];
-
-catalogData["特殊"] = [
-  {
-    code: "RE-02",
-    name: "膏狀環保去漆劑",
-    usage: "古蹟或建築物木材、金屬舊漆去除，適合立面施工",
-    features: "去除舊漆不傷底材；有助於重工（返工）處理"
-  },
-  {
-    code: "DG-102",
-    name: "投影螢幕漆",
-    usage: "水泥牆、隔間木板、防火板等牆面作投影螢幕使用",
-    features: "滾/刷/噴皆可；畫質清晰、色彩飽和；不眩光；適用家庭劇院與簡報空間"
-  },
-  {
-    code: "DG-6318B",
-    name: "透明背投影螢幕漆",
-    usage: "透明 PET、玻璃、壓克力板作正/背投影螢幕",
-    features: "室內外適用；耐水耐候；快乾可連續施工；畫質清晰不炫光、具立體感"
-  },
-  {
-    code: "NTF-006",
-    name: "水性防火漆",
-    usage: "木材、塑膠、金屬、FRP 等需防火要求之基材",
-    features: "膨脹型防火塗料；快乾好操作；所需膜厚約市售 1/3 即可達效"
-  },
-  {
-    code: "IS-6556",
-    name: "環保硬化劑（高光用）",
-    usage: "DG-524H 高光系列專用硬化劑",
-    features: "高光、高硬度用架橋劑"
-  },
-  {
-    code: "IS-6556A",
-    name: "環保硬化劑（消光用）",
-    usage: "DG-524 消光系列專用硬化劑",
-    features: "消光、高硬度用架橋劑"
-  }
-];
-function renderCategory(cat){
-  const listEl = document.getElementById("productList");
-  const titleEl = document.getElementById("catTitle");
-  const countEl = document.getElementById("catCount");
-
-  const items = catalogData[cat] || [];
-  titleEl.textContent = cat;
-  countEl.textContent = `共 ${items.length} 項`;
-
-  listEl.innerHTML = items.map(p => `
-    <div class="prod-card">
-      <div class="prod-top">
-  <div class="prod-name">
-    ${p.name}
-    <span class="prod-code">${p.code}</span>
-  </div>
-</div>
-
-      <div class="prod-row">
-        <span class="prod-label">適用：</span>${p.usage || ""}
-      </div>
-
-      <div class="prod-row">
-        <span class="prod-label">特性：</span>${p.features || ""}
-      </div>
-    </div>
-  `).join("");
-}
-
-(function initCatalog(){
-  const tabs = document.getElementById("catalogTabs");
-  if(!tabs) return;
-
-  tabs.addEventListener("click", (e) => {
-    const btn = e.target.closest(".tab-btn");
-    if(!btn) return;
-
-    tabs.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    renderCategory(btn.dataset.cat);
-  });
-
-  renderCategory("水泥牆漆"); // 預設進來顯示
-})();
+      renderCategory("水泥牆漆");
+    })();
   </script>
 </body>
 </html>
