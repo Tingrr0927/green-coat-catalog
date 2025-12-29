@@ -683,6 +683,63 @@
   }
 }
 
+/* =========================================================
+   ✅ PATCH v3：保留翻頁 + 修 iOS 按鈕點擊不靈
+   （請放在 CSS 最後）
+   ========================================================= */
+
+/* 1) nav 改成在 book 內固定浮層，不吃 page 捲動 */
+.nav{
+  pointer-events: none;           /* 先讓 nav 本體不吃事件 */
+}
+.nav-btn{
+  pointer-events: auto;           /* 只有按鈕吃事件 */
+  touch-action: manipulation;
+  min-height: 52px;               /* 手機好按 */
+}
+
+/* 2) 手機/平板：把 nav 做成「浮在書本底部」的 overlay */
+@media (max-width: 900px){
+  .book{ position: relative; }
+
+  .nav{
+    position: absolute;           /* ✅ 固定在 book 底部，不跟 page 滾 */
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 12px;
+    border-radius: 999px;
+
+    background: rgba(253, 252, 247, 0.96);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+
+    /* ✅ iOS：blur 很常讓觸控怪，先關掉 */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* ✅ 避免內容被 nav 蓋住：把 page 底部留空間 */
+  .page{
+    padding-bottom: 140px !important;
+  }
+}
+
+/* 3) 手機：nav-info 先隱藏，按鈕占比大，避免擠壓 */
+@media (max-width: 480px){
+  .nav-info{ display: none; }
+  .nav-btn{
+    width: 48%;
+    min-width: 0;
+  }
+}
+
   </style>
 </head>
 
@@ -788,7 +845,7 @@
   </div>
 
   <div class="form-link-area">
-    <p>{2}如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
+    <p>{3}如需打樣或測試塗料，歡迎與我們聯繫，或填寫線上表單，我們將有專人與您聯絡。</p>
     <a href="https://forms.gle/Nf5jKBXVDjChkryTA" target="_blank" rel="noopener" class="form-link-btn">填寫線上表單</a>
   </div>
 
