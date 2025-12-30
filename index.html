@@ -243,23 +243,23 @@
 
     /* ===== Navigation（固定在 page 底部，且不吃 transform） ===== */
     .nav{
-      position:absolute;
-      left:16px;
-      right:16px;
-      bottom:14px;
+  position: fixed;        /* ⭐ 關鍵 */
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
 
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
 
-      z-index:9999;
+  z-index:9999;
 
-      background:rgba(253, 252, 247, 0.96);
-      border:1px solid rgba(226, 232, 240, 0.95);
-      border-radius:999px;
+  background:rgba(253, 252, 247, 0.96);
+  border:1px solid rgba(226, 232, 240, 0.95);
+  border-radius:999px;
 
-      padding:12px 14px;
+  padding:12px 14px;
       pointer-events:auto;
     }
 
